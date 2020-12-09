@@ -1,0 +1,12 @@
+//@version=4
+study("SPY Dividend Yield", precision=5,overlay = false)
+
+// the 'close' is the amount of the dividend
+dividendsValue = security('ESD_FACTSET:AMEX;SPY' + ";DIVIDENDS", "D", close, lookahead=true)
+
+//yearly dividend = sum of four dividends in the past 4 quarters
+yr_div = dividendsValue[0] + dividendsValue[64] + dividendsValue[127] + dividendsValue[190]
+
+div_ratio = (yr_div / close)*100
+
+plot(div_ratio)
