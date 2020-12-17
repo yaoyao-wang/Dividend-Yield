@@ -101,7 +101,7 @@ float div_ratio_diff = div_ratio - div_ratio_spy
 
 (10) We calculate the dividend yield of SPY (div_ratio_spy) by dividing the annual dividend of spy by the day’s spy closing price and times 100 to get a percentage
 
-(11) That’s how we calculate the dividend yield and dividend yield of SPY
+(11) That’s how we calculate the dividend yield of current stock and the dividend yield of SPY
 
 ### · Step Three: Plotting
 
