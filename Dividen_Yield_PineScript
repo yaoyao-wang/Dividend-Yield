@@ -1,12 +1,49 @@
 //@version=4
-study("SPY Dividend Yield", precision=5,overlay = false)
+study(title="Yaonology Dividend Yield Tutorial", shorttitle="Dividend Yield, %", format=format.percent, precision=2, overlay=false)
+dwm_period = timeframe.isdwm ? timeframe.period : "D"
+day_time = 24*60*60*1000
 
-// the 'close' is the amount of the dividend
-dividendsValue = security('ESD_FACTSET:AMEX;SPY' + ";DIVIDENDS", "D", close, lookahead=true)
+// Choose which plot to show, the dividend yield or the gap between dividend yield of current stock and SPY
+choice = input(title="Choice", defval="Dividend Yield of Current Stock", options=["Dividend Yield of Current Stock", "Gap Between Dividend Yield of Current Stock and SPY"]) 
 
-//yearly dividend = sum of four dividends in the past 4 quarters
-yr_div = dividendsValue[0] + dividendsValue[64] + dividendsValue[127] + dividendsValue[190]
+// Subtract slightly less than one month to accomodate possible overlaps in dividends
+year_ago_time = time - (366-27)*day_time
+year_sum(s) => 
+    i = time[1] < year_ago_time ? 1 :
+         nz(time[2]) < year_ago_time ? 2 :
+         nz(time[3]) < year_ago_time ? 3 :
+         nz(time[4]) < year_ago_time ? 4 :
+         nz(time[5]) < year_ago_time ? 5 :
+         nz(time[6]) < year_ago_time ? 6 :
+         nz(time[7]) < year_ago_time ? 7 :
+         nz(time[8]) < year_ago_time ? 8 :
+         nz(time[9]) < year_ago_time ? 9 :
+         nz(time[10]) < year_ago_time ? 10 :
+         nz(time[11]) < year_ago_time ? 11 :
+         nz(time[12]) < year_ago_time ? 12 : 13
+    csum = cum(close)
+    csum - nz(csum[i])
+div_ticker = tickerid("ESD", syminfo.prefix + ";" + syminfo.ticker +";" +"DIVIDENDS")
+div_ttm = security(div_ticker, dwm_period, year_sum(close), true, lookahead=true)
+div_ttm_fill = security(div_ticker, dwm_period, year_sum(close), false, lookahead=true)
 
-div_ratio = (yr_div / close)*100
+div_ticker_spy = 'ESD_FACTSET:AMEX;SPY'+";" +"DIVIDENDS"
+div_ttm_spy = security(div_ticker_spy, dwm_period, year_sum(close), true, lookahead=true)
+div_ttm_fill_spy = security(div_ticker_spy, dwm_period, year_sum(close), false, lookahead=true)
 
-plot(div_ratio)
+// Add gaps for cases when there is no dividends in last year. +1 month to avoid few-day gaps.
+float last_div_ttm_time = na
+last_div_ttm_time := na(div_ttm) ? last_div_ttm_time[1] : time
+div_ttm_fill_with_gaps = last_div_ttm_time < time-(366+27)*day_time ? na : div_ttm_fill
+
+float last_div_ttm_time_spy = na
+last_div_ttm_time_spy := na(div_ttm_spy) ? last_div_ttm_time_spy[1] : time
+div_ttm_fill_with_gaps_spy = last_div_ttm_time_spy < time-(366+27)*day_time ? na : div_ttm_fill_spy
+
+float div_ratio = div_ttm_fill_with_gaps / close * 100
+float div_ratio_spy = div_ttm_fill_with_gaps_spy / close * 100
+float div_ratio_gap = div_ratio - div_ratio_spy
+
+plot(choice == "Dividend Yield of Current Stock" ? div_ratio : choice == "Gap Between Dividend Yield of Current Stock and SPY" ? div_ratio_gap : na)
+
+  
