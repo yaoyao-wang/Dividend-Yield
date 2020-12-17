@@ -6,7 +6,7 @@ The dividend yield, expressed as a percentage, is a financial ratio
 
 It shows how much a company pays out in dividends each year relative to its stock price.
 
-Today, we are going to introduce how to use the dividend yield of S&P 500 as an indicator of the market performance
+Today, we are going to introduce how to use the dividend yield as an indicator of the market performance
 
 
 ## 2. What does the spread tell you?
