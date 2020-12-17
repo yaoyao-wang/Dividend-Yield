@@ -1,10 +1,10 @@
 //@version=4
+// Step One:Initial Setting
 study(title="Yaonology Dividend Yield Tutorial", shorttitle="Dividend Yield, %", format=format.percent, precision=2, overlay=false)
+
+// Step Two:Parameter Setting 
 dwm_period = timeframe.isdwm ? timeframe.period : "D"
 day_time = 24*60*60*1000
-
-// Choose which plot to show, the dividend yield or the gap between dividend yield of current stock and SPY
-choice = input(title="Choice", defval="Dividend Yield of Current Stock", options=["Dividend Yield of Current Stock", "Gap Between Dividend Yield of Current Stock and SPY"]) 
 
 // Subtract slightly less than one month to accomodate possible overlaps in dividends
 year_ago_time = time - (366-27)*day_time
@@ -43,6 +43,10 @@ div_ttm_fill_with_gaps_spy = last_div_ttm_time_spy < time-(366+27)*day_time ? na
 float div_ratio = div_ttm_fill_with_gaps / close * 100
 float div_ratio_spy = div_ttm_fill_with_gaps_spy / close * 100
 float div_ratio_gap = div_ratio - div_ratio_spy
+
+// Step Three:Plotting
+// Choose which plot to show, the dividend yield or the gap between dividend yield of current stock and SPY
+choice = input(title="Choice", defval="Dividend Yield of Current Stock", options=["Dividend Yield of Current Stock", "Gap Between Dividend Yield of Current Stock and SPY"]) 
 
 plot(choice == "Dividend Yield of Current Stock" ? div_ratio : choice == "Gap Between Dividend Yield of Current Stock and SPY" ? div_ratio_gap : na)
 
