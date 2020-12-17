@@ -118,7 +118,9 @@ plot(choice == "Dividend Yield of Current Stock" ? div_ratio : choice == "Differ
 
 (3) Then with a simple command, we can get the plot we want
 
+![](image/dividend_yield.png)
+
 (4) If you want to change the plot to the difference between dividend yield of current stock and SPY, simply click on the setting button on the plot and select "Difference Between Dividend Yield of Current Stock and SPY"
 
-![](image/dividend_yield.png)
+![](image/dividend_yield_diff.png)
 
